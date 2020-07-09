@@ -103,7 +103,7 @@ func replaceSpace(s string) string {
 输出：[2,3,1]
 ```
 
-**思路:**
+**思路:递归栈**
 
 ```go
 /**
@@ -114,12 +114,214 @@ func replaceSpace(s string) string {
  * }
  */
 func reversePrint(head *ListNode) []int {
-
+		if head == nil {
+        return []int{}
+    }
+    if head.Next != nil{
+        list := reversePrint(head.Next)
+        list = append(list, head.Val)
+        return list
+    }
+    return []int{head.Val}
 }
+```
+
+### 5.重建二叉树
+
+例如，给出
+
+前序遍历 preorder = [3,9,20,15,7]
+中序遍历 inorder = [9,3,15,20,7]
+返回如下的二叉树：
+
+    		3
+       / \
+      9  20
+        /  \
+       15   7
+**思路: 根据两种遍历的规律，可以确认每一颗子树的根节点**
+
+```go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func buildTree(preorder []int, inorder []int) *TreeNode {
+    // 前序遍历 先自己->左->右
+    // 中序遍历 先左->自己->右
+    for k := range inorder {
+        if inorder[k] == preorder[0] { // preorder 是根节点
+            return &TreeNode{
+                Val: preorder[0],
+                Left: buildTree(preorder[1:k + 1], inorder[0:k]),
+                Right: buildTree(preorder[k+1:], inorder[k+1:]),
+            }
+        }
+    }
+    return nil
+}
+```
+
+### 6.用两个栈实现队列
+
+用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 appendTail 和 deleteHead ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，deleteHead 操作返回 -1 )
+
+示例 1：
+
+输入：
+
+```
+["CQueue","appendTail","deleteHead","deleteHead"]
+[[],[3],[],[]]
+输出：[null,null,3,-1]
+
+```
+
+示例 2：
+
+输入：
+
+```
+["CQueue","deleteHead","appendTail","appendTail","deleteHead","deleteHead"]
+[[],[],[5],[2],[],[]]
+输出：[null,-1,null,null,5,2]
+```
+
+**思路: 1.实现栈2.A栈存储 B栈辅助 3.数据插入时存储栈必须为空 数据先压入辅助栈 再全部弹出至存储栈**
+
+```go
+/**
+ * Your CQueue object will be instantiated and called as such:
+ * obj := Constructor();
+ * obj.AppendTail(value);
+ * param_2 := obj.DeleteHead();
+ */
+type CQueue struct {
+    DataStack Stack
+    AuxStack Stack
+}
+
+type Stack struct {
+    Data []int
+}
+
+// 出栈
+func (s *Stack) OutStack() int {
+    var data int
+    if len(s.Data) != 0 {
+        data = s.Data[0]
+        s.Data = s.Data[1:]
+    } else {
+        data = -1
+    }
+    return data
+}
+
+// 压栈
+func (s *Stack) InStack(val int) {
+    s.Data = append(s.Data, val)
+}
+
+func Constructor() CQueue {
+    return CQueue{
+    }
+}
+
+// 数据插入时存储栈必须为空 数据先压入辅助栈 再全部弹出至存储栈
+func (this *CQueue) AppendTail(value int)  {
+    if len(this.DataStack.Data) == 0 {
+        this.DataStack.InStack(value)
+    } else {
+        for len(this.DataStack.Data) != 0 {
+            this.AuxStack.InStack(this.DataStack.OutStack())  
+        }
+        this.AuxStack.InStack(value)
+
+        for len(this.AuxStack.Data) != 0 {
+            this.DataStack.InStack(this.AuxStack.OutStack())
+        }
+    }
+}
+
+func (this *CQueue) DeleteHead() int {
+    data := this.DataStack.OutStack()
+    return data
+}
+```
+
+## 7.斐波那契数列
+
+写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项。斐波那契数列的定义如下：
+
+```
+F(0) = 0,   F(1) = 1
+F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
+```
+
+
+斐波那契数列由 0 和 1 开始，之后的斐波那契数就是由之前的两数相加而得出。
+
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+
+**思路:利用动态规划的观念动态推到。递归容易栈溢出**
+
+```go
+func fib(n int) int {
+    if n == 0 {
+        return 0
+    }
+    if n == 1 {
+        return 1
+    }
+
+    cache := make([]int, n + 1)
+    cache[0] = 0
+    cache[1] = 1
+
+    for i := 2; i <= n; i ++ {
+        cache[i] = (cache[i - 1] + cache[i - 2]) % 1000000007
+    } 
+    return cache[n]
+}
+```
+
+### 8.青蛙跳台阶问题
+
+一只青蛙一次可以跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个 `n` 级的台阶总共有多少种跳法。
+
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1
+
+**示例 1：**
+
+```
+输入：n = 2
+输出：2
+```
+
+**示例 2：**
+
+```
+输入：n = 7
+输出：21
+```
+
+**提示：**
+
+- `0 <= n <= 100`
+
+**思路:**
+
+```go
+
 ```
 
 
 
 来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/er-wei-shu-zu-zhong-de-cha-zhao-lcof
-著作权归领扣网络所有。
+链接：https://leetcode-cn.com/problems/fei-bo-na-qi-shu-lie-lcof
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+

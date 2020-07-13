@@ -341,7 +341,7 @@ func numWays(n int) int {
 }
 ```
 
-9.旋转数组中的最小数字
+### 9.旋转数组中的最小数字
 
 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个递增排序的数组的一个旋转，输出旋转数组的最小元素。例如，数组 [3,4,5,1,2] 为 [1,2,3,4,5] 的一个旋转，该数组的最小值为1。  
 
@@ -359,10 +359,215 @@ func numWays(n int) int {
 输出：0
 ```
 
-**思路:**
+**思路:1.暴力遍历 2.二分求最小值+双指针**
 
 ```go
+func minArray(numbers []int) int {
+    maxNum := numbers[0]
 
+    for i := 1; i < len(numbers); i++ {
+        if numbers[i] < maxNum {
+            return numbers[i]
+        }
+    }
+    return maxNum
+}
+```
+
+```go
+func minArray(numbers []int) int {
+        // 求中位点
+    j := len(numbers) - 1
+    if j == 0 {
+        return numbers[j]
+    }
+    m := int(j / 2)
+    // 判断中位点和尾点的关系 
+    // 中位点在左数组中 最小值在[m+1, j]
+    if numbers[m] > numbers[j] {
+        return minArray(numbers[m+1:])
+    // 最小点在左数组中
+    } else if numbers[m] < numbers[j] {
+        return minArray(numbers[:m+1])
+    // 相等时无法判断 缩小边界
+    } else {
+        return minArray(numbers[:j])
+    }
+}
+```
+
+### 10.矩阵中的路径
+
+请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从矩阵中的任意一格开始，每一步可以在矩阵中向左、右、上、下移动一格。如果一条路径经过了矩阵的某一格，那么该路径不能再次进入该格子。例如，在下面的3×4的矩阵中包含一条字符串“bfce”的路径（路径中的字母用加粗标出）。
+
+```
+[
+  ["a","b","c","e"],
+  ["s","f","c","s"],
+  ["a","d","e","e"]
+]
+```
+
+但矩阵中不包含字符串“abfb”的路径，因为字符串的第一个字符b占据了矩阵中的第一行第二个格子之后，路径不能再次进入这个格子。
+
+示例 1：
+
+```
+输入：board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+输出：true
+```
+
+示例 2：
+
+```
+输入：board = [["a","b"],["c","d"]], word = "abcd"
+输出：false
+```
+
+```go
+// 这中leecode通过不了不知道是不是全局变量的原因
+var m, n int
+var found = false
+
+func exist(board [][]byte, word string) bool {
+	m = len(board)
+	n = len(board[0])
+
+	visitedNode := make(map[int]map[int]int) // 一维 二维
+	for k, _ := range board {
+		visitedNode[k] = make(map[int]int)
+	}
+	// 起点不固定的DFS
+	for k, v := range board {
+		for k1, v1 := range v {
+			if v1 == []byte(word)[0] {
+				var path []byte
+				path = append(path, v1)
+				visitedNode[k][k1] = 1
+				DfsSearch(board, path, visitedNode, k, k1, []byte(word))
+				if found {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}
+// DfsSearch 深度优先搜索
+func DfsSearch(board [][]byte, path []byte, visitedNode map[int]map[int]int, i, j int, word []byte)  {
+	//fmt.Println(string(path), string(word))
+	if string(path) == string(word) {
+		found = true
+		return
+	}
+
+	// 上
+	if i > 0 {
+		tempi := i - 1
+		if !CheckVisited(visitedNode, tempi, j) {
+			if board[tempi][j] == word[len(path)] {
+				path = append(path, board[tempi][j])
+				visitedNode[tempi][j] = 1
+				DfsSearch(board, path, visitedNode, tempi, j, word)
+				path = path[:len(path) - 1]
+				delete(visitedNode[tempi], j)
+			}
+		}
+	}
+	// 下
+	if i < m - 1 {
+		tempi := i + 1
+		if !CheckVisited(visitedNode, tempi, j) {
+			if board[tempi][j] == word[len(path)] {
+				path = append(path, board[tempi][j])
+				visitedNode[tempi][j] = 1
+				DfsSearch(board, path, visitedNode, tempi, j, word)
+				path = path[:len(path) - 1]
+				delete(visitedNode[tempi], j)
+			}
+		}
+	}
+	// 左
+	if j > 0 {
+		tempj := j - 1
+		if !CheckVisited(visitedNode, i, tempj) {
+			if board[i][tempj] == word[len(path)] {
+				path = append(path, board[i][tempj])
+				visitedNode[i][tempj] = 1
+				DfsSearch(board, path, visitedNode, i, tempj, word)
+				path = path[:len(path) - 1]
+				delete(visitedNode[i], tempj)
+			}
+		}
+	}
+	// 右
+	if j < n - 1 {
+		tempj := j + 1
+		if !CheckVisited(visitedNode, i, tempj) {
+			if board[i][tempj] == word[len(path)] {
+				path = append(path, board[i][tempj])
+				visitedNode[i][tempj] = 1
+				DfsSearch(board, path, visitedNode, i, tempj, word)
+				path = path[:len(path) - 1]
+				delete(visitedNode[i], tempj)
+			}
+		}
+	}
+}
+
+func CheckVisited(visitedNode map[int]map[int]int, i, j int) bool {
+	if _, ok := visitedNode[i][j]; ok {
+		return true
+	}
+	return false
+}
+```
+
+```go
+//时间O(MN)，M，N 为rows，cols
+//空间O(K) k=len(word)
+func exist(board [][]byte, word string) bool {
+	rows, cols := len(board), len(board[0])
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			if dfs(board, i, j, 0, word) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func dfs(board [][]byte, i, j, k int, word string) bool {
+	//已经完全匹配到该word
+	if k == len(word) {
+		return true
+	}
+
+	//i,j边界
+	if i < 0 || j < 0 || i >= len(board) || j >= len(board[0]) {
+		return false
+	}
+
+	if board[i][j] == word[k] {
+		temp := board[i][j]
+		//临时占位修改board[i][j]，避免递归中使用到重复格子，因为题目要求每个格子只能使用一次
+		//如果board[i][j]的上下左右都找不到符合条件的值，进行还原
+		board[i][j] = '*'
+		//对board[i][j]上下左右的元素进行匹配
+		if dfs(board, i-1, j, k+1, word) ||
+			dfs(board, i+1, j, k+1, word) ||
+			dfs(board, i, j-1, k+1, word) ||
+			dfs(board, i, j+1, k+1, word) {
+			return true
+		} else {
+			//board[i][j]上下左右的元素都没有匹配，还原
+			board[i][j] = temp
+		}
+	}
+	return false
+}
 ```
 
 

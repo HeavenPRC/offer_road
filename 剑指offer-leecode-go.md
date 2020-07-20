@@ -608,7 +608,7 @@ func movingCount(m int, n int, k int) int {
 			}
 		}
 	}
-	// 使用 bfs进行广度优先遍历，找出可走路径，统计路径上点的个数
+	// 使用bfs进行广度优先遍历，找出可走路径，统计路径上点的个数
 	queue := list.New()
 	queue.PushBack(&Point{0,0})
     
@@ -633,7 +633,6 @@ func movingCount(m int, n int, k int) int {
 			arr[x][y+1] =2
 			count++
 		}
-
 	}
 
 	return count

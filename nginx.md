@@ -185,6 +185,71 @@ ssl_dhparam ;
 
 
 
+## 6.nginx 进程管理信号
+
+| Master进程                                                   | Worker进程                                              | Nginx命令行                                                |
+| ------------------------------------------------------------ | ------------------------------------------------------- | ---------------------------------------------------------- |
+| 监控worker进程 CHLD                                          |                                                         |                                                            |
+| 管理worker进程                                               |                                                         |                                                            |
+| 接收信号：<br />TERM,INT<br />QUIT<br />HUP<br />USR1<br />USR2<br />WINCH | 接收信号：<br />TERM,INT<br />QUIT<br />USR1<br />WINCH | Reload:HUP<br />reopen:USER1<br />stop:TERM<br />quit:QUIT |
+
+
+
+## 7.优化实践
+
+```nginx
+# worker 进程和cpu核数保持一致
+worker_processes  2;
+```
+
+
+
+## nginx relod的流程
+
+向master进程发送HUP信号
+
+master进程校验配置语法是否正确
+
+master进程打开新的监听端口
+
+master进程用新配置启动新的worker子进程
+
+master进程向老worker子进程发送QUIT信号 （有请求还会存在，在timeout后直接停止）
+
+老worker进程关闭监听句柄，处理完当前连接后结束进程
+
+
+
+## nginx 热升级 
+
+将旧nginx文换成新的nginx文件 （备份）
+
+向master进程发送USR2信号 kill -USR2 [master进程的pid]
+
+master进程修改pid文件名，加后缀.oldbin
+
+master进程用新Nginx文件启动新master进程
+
+正常:向老msater进程发送QUIT信号，关闭老master进程
+
+回滚:向老master发送HUP，向新msater发送QUIT
+
+
+
+## nginx 优雅关闭QUIT 
+
+识别进程中没有处理请求----http请求
+
+1.设置定时器 worker_shutdown_timeout
+
+2.关闭监听句柄
+
+3.关闭空闲连接
+
+4.在循环中等待全部连接关闭
+
+5.退出进程
+
 
 
 ## nginx 基础指令
@@ -200,11 +265,7 @@ nginx
 -v -V 打印nginx的版本信息，编译信息等
 ```
 
-### nginx升级直接替换 sbin中的二进制文件 
 
-kill -USR2 pid   
-
-kill -WINCH 13195 优雅关闭进程
 
 ### nginx日志切割 reopen
 

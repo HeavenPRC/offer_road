@@ -200,6 +200,21 @@ ssl_dhparam ;
 ```nginx
 # worker 进程和cpu核数保持一致
 worker_processes  2;
+
+# 连接池包含 上游服务器和客户端的连接
+# 一个连接 结构体占232byte + 两个读写事件结构体96 * 2 = 424byte
+events{
+      worker_connections 512;
+}
+
+# 内存池提前分配好 请求内存池 512 连接内存池 4k  一般不做修改
+Syntax: connection_pool_size size;
+Default: connection_pool_size 256|512;
+Context: http, server
+
+Syntax: request_pool_size size;
+Default: request_pool_size 256|512;
+Context: http, server
 ```
 
 

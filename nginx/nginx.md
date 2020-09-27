@@ -40,7 +40,9 @@ configure 支持的参数
 3. 特殊参数 
 ```
 
-
+```
+/usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
+```
 
 ## 2.conf配置语法
 

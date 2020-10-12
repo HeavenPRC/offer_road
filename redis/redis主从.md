@@ -107,5 +107,35 @@ redis2.8后，网络中断后会继续把收到的写操作写入 replication bu
 
 
 
+### 选主库
+
+1.检查在线状态，检查网络连接状态
+
+不在线直接过滤
+
+连接状态相关配置:
+
+```
+down-after-miliseconds * 10 # down-after-miliseconds 超时时间 10 次数 超过次数过滤
+```
+
+2.进行打分
+
+**第一轮:优先级**
+
+```
+slave-priority #配置从库优先级
+```
+
+**第二轮:和旧主库同步接近**
+
+环形缓冲区的标志位 slave_repl_offse和master_repl_offset
+
+**第三轮:ID号小的从库优先**
+
+
+
+
+
 ## 切片集群
 

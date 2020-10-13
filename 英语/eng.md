@@ -1,4 +1,4 @@
-Secure 安全的
+Secure [sɪˈkjʊr]  安全的
 
 Sockets 
 
@@ -24,10 +24,14 @@ process 进程
 
 multiplexing 多路复用
 
-driven
+driven 驱动
 
 except 除了
 
 preamble 序言
 
 replication 复制
+
+Subscribe 订阅
+
+publish 发布

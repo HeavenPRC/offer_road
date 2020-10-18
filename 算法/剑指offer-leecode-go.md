@@ -8,15 +8,17 @@
 
 ```go
 func findRepeatNumber(nums []int) int {
-    numsMap := make(map[int]int)
-
-    for _, v := range nums {
-        if _, ok := numsMap[v]; ok {
-            return v
+		var num int 
+    for i,v := range nums[1:] {
+        if nums[i] == v {
+            num = v
+            break
+        }else {
+            //未找到
+            num = -1
         }
-        numsMap[v] = 1
     }
-    return 0
+    return num
 }
 ```
 

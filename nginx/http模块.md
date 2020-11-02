@@ -181,6 +181,49 @@ mirror_request_body on|off; # 是否转发body
 
 ### content
 
+#### root&alias
+
+功能:将url映射为文件，返回静态文件内容。
+
+root 会将完整的url映射到文件路径中
+
+alias 只会将location后的URL映射到文件路径
+
+```nginx
+location /aa {
+  alias html # = /html/index.html
+}
+location /aa {
+  root html # = /aa/html/index.html
+}
+```
+
+#### 3个变量
+
+```nginx
+location /realpath/ {
+	root html
+}
+```
+
+request_filename - 访问文件的完整路径
+
+document_root - 由URI和root/alias生成的文件夹路径
+
+Realpath_root - 将 document_root中的软链转换成真实路径
+
+#### 静态文件返回的content-type
+
+types{text/html}
+
+#### 未找到文件的错误日志(不常用感觉)
+
+log_not_found
+
+#### index和autoindex模块
+
+功能：指定/访问时返回index文件内容
+
 
 
 

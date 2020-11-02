@@ -222,9 +222,9 @@ log_not_found
 
 #### index和autoindex模块
 
-功能：指定/访问时返回index文件内容
+功能：root和alias指定 / 访问时返回index文件内容
 
-
+#### concat 多个小文件（阿里提供）
 
 
 

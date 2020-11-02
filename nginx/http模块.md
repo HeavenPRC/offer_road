@@ -226,5 +226,60 @@ log_not_found
 
 #### concat 多个小文件（阿里提供）
 
+### log 阶段
+
+功能：将http请求相关信息记录到日志
+
+```nginx
+access_log path [format [buffer = size]]
+open_log_file_cache off; # max 缓存最大句柄数，超出使用lru算法进行淘汰
+                         # inactive 文件访问后在这段之间内不会被关闭 最大10s
+											   # min_uses
+                         # valid
+                         # off
+```
+
+加日志buffer 提升读写性能
+
+### http过滤模块
+
+copy_filter: 复制包体内容
+
+Posterpone_filter：处理子请求
+
+header_filter:构造响应头部
+
+Writer_filter:发送响应
+
+#### sub模块-将响应中指定的字符串替换成指定的字符串
+
+#### addition模块
+
+在响应前或者响应后增加内容，而增加内容的方式是通过增加子请求实现
+
+
+
+## Nginx变量
+
+### 运行原理
+
+分为提供变量的模块和使用变量的模块
+
+惰性求值 在使用时才进行计算
+
+变量值可以时刻变化，其值为使用那一时刻的值
+
+存储:hash表 默认64字节
+
+### Http请求相关的变量
+
+```
+
+```
+
+
+
+
+
 
 

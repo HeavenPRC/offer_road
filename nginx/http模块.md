@@ -274,12 +274,51 @@ Writer_filter:发送响应
 ### Http请求相关的变量
 
 ```
+arg_参数名    URL中某个参数的值 type=Api111
+query_string 与args变量完全相同
+args         全部url参数
+is_args      有参数返回？ 无返回空
+content_length hearder 对应值
+content_type  header对应值
+```
+
+![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WeChat94a13eda584a0dda56d6a46357de28f8.png)
+
+![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WeChat2856e8270dc68491975bff9b1bad307e.png)
+
+![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WechatIMG77.png)
+
+![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WeChatbd731479c8a6d9a500b7291b7f448472.png)
+
+#### TCP连接相关变量
+
+![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WechatIMG78.png)
+
+![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WechatIMG79.png)
+
+#### 发送HTTP响应时相关的变量
+
+![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WechatIMG82.png)
+
+#### Nginx 处理过程中产生的变量
+
+![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WechatIMG80.png)
+
+![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WechatIMG81.png)
+
+#### Nginx系统变量
+
+![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WechatIMG83.png)
+
+
+
+### 防盗链referer （wait）75-80节略
+
+### 使用Keepalive提升连接效率
+
+![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WechatIMG84.png)
 
 ```
 
-
-
-
-
-
+```
 

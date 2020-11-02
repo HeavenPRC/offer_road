@@ -318,7 +318,9 @@ content_type  header对应值
 
 ![avatar](https://image-stu.oss-cn-beijing.aliyuncs.com/WechatIMG84.png)
 
-```
-
+```nginx
+keepalive_disable  # 某些浏览器不支持keep-alive
+keepalive_requests # 在一个连接上最多执行多少个请求
+keepalive_timeout
 ```
 

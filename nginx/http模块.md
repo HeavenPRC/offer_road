@@ -324,3 +324,16 @@ keepalive_requests # 在一个连接上最多执行多少个请求
 keepalive_timeout
 ```
 
+#### 对上游的keepalive
+
+```nginx
+proxy_http_version 1.1 # 1.0不支持keepalive
+proxy_set_header Connection "";
+
+keepalive 1111; #最多保持的空闲连接数
+keepalive_requests # 在一个连接上最多执行多少个请求
+keepalive_timeout
+
+resolver  # dns
+```
+

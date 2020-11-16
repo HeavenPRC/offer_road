@@ -1,4 +1,4 @@
-
+## 数组
 
 ### 1.数组中重复的数字
 
@@ -94,7 +94,66 @@ func replaceSpace(s string) string {
 }
 ```
 
-### 4.从尾到头打印链表
+### 4.旋转数组中的最小数字
+
+把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个递增排序的数组的一个旋转，输出旋转数组的最小元素。例如，数组 [3,4,5,1,2] 为 [1,2,3,4,5] 的一个旋转，该数组的最小值为1。  
+
+示例 1：
+
+```
+输入：[3,4,5,1,2]
+输出：1
+```
+
+示例 2：
+
+```
+输入：[2,2,2,0,1]
+输出：0
+```
+
+**思路:1.暴力遍历 2.二分求最小值+双指针**
+
+```go
+func minArray(numbers []int) int {
+    maxNum := numbers[0]
+
+    for i := 1; i < len(numbers); i++ {
+        if numbers[i] < maxNum {
+            return numbers[i]
+        }
+    }
+    return maxNum
+}
+```
+
+```go
+func minArray(numbers []int) int {
+        // 求中位点
+    j := len(numbers) - 1
+    if j == 0 {
+        return numbers[j]
+    }
+    m := int(j / 2)
+    // 判断中位点和尾点的关系 
+    // 中位点在左数组中 最小值在[m+1, j]
+    if numbers[m] > numbers[j] {
+        return minArray(numbers[m+1:])
+    // 最小点在左数组中
+    } else if numbers[m] < numbers[j] {
+        return minArray(numbers[:m+1])
+    // 相等时无法判断 缩小边界
+    } else {
+        return minArray(numbers[:j])
+    }
+}
+```
+
+### 
+
+## 链表
+
+### 1.从尾到头打印链表
 
 输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）。
 
@@ -128,7 +187,117 @@ func reversePrint(head *ListNode) []int {
 }
 ```
 
-### 5.重建二叉树
+### 2.删除链表节点
+
+```
+func deleteNode(head *ListNode, val int) *ListNode {
+    // 假头 优化head的写法判断
+    dummy := &ListNode{
+        Val:  0, 
+        Next: head,
+    }
+    first := dummy
+    second := dummy.Next
+    for second != nil {
+        if second.Val == val {
+            first.Next = second.Next
+            second.Next = nil
+            break
+        }
+        first = first.Next
+        second = second.Next
+    }
+    return dummy.Next
+}
+```
+
+### 3.寻找公共链表节点
+
+```go
+func getIntersectionNode(headA, headB *ListNode) *ListNode {
+    if headA == nil || headB == nil {
+        return nil
+    }
+    // 解法1:暴力N2双循环
+    // 解法2:借助Map
+    // 相遇
+    i := 1
+    aPoint, bPoint := headA, headB
+    // 防止死循环
+    for i < 4 {
+       if aPoint == bPoint {
+           return aPoint
+       }
+       if aPoint.Next == nil {
+           i++
+           aPoint = headB
+       } else {
+           aPoint = aPoint.Next
+       }
+       if bPoint.Next == nil {
+           i++
+           bPoint = headA
+       } else {
+           bPoint = bPoint.Next
+       }
+    }
+    return nil
+}
+```
+
+### 4.环路检测
+
+给定一个链表，如果它是有环链表，实现一个算法返回环路的开头节点。
+有环链表的定义：在链表中某个节点的next元素指向在它前面出现过的节点，则表明该链表存在环路。
+链接：https://leetcode-cn.com/problems/linked-list-cycle-lcci
+
+```go
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+
+func detectCycle(head *ListNode) *ListNode {
+    fast,slow := head,head
+	if fast == nil {
+		return nil
+	}
+    // 先找出第一个相遇点，快指针是满指针的2倍速度
+	for fast != nil {
+		if fast.Next == nil{
+			return nil
+		}
+		
+		fast = fast.Next.Next
+		slow = slow.Next
+		
+		if fast == slow{
+			//说明走到一块了
+			break
+		}
+	}
+	
+	if fast == nil{
+		return nil
+	}
+  fast = head	
+	for slow != fast {
+		fast=fast.Next
+        slow=slow.Next
+	}
+	
+	return slow
+}
+```
+
+### 
+
+## 二叉树
+
+### 1.重建二叉树
 
 例如，给出
 
@@ -168,7 +337,44 @@ func buildTree(preorder []int, inorder []int) *TreeNode {
 }
 ```
 
-### 6.用两个栈实现队列
+### 2.二叉树层级遍历
+
+```go
+func levelOrderBottom(root *TreeNode) [][]int {
+    levelOrder := [][]int{}
+    if root == nil {
+        return levelOrder
+    }
+    queue := []*TreeNode{}
+    queue = append(queue, root)
+    for len(queue) > 0 {
+        level := []int{}
+        size := len(queue)
+        for i := 0; i < size; i++ {
+            node := queue[0]
+            queue = queue[1:]
+            level = append(level, node.Val)
+            if node.Left != nil {
+                queue = append(queue, node.Left)
+            }
+            if node.Right != nil {
+                queue = append(queue, node.Right)
+            }
+        }
+        levelOrder = append(levelOrder, level)
+    }
+    for i := 0; i < len(levelOrder) / 2; i++ {
+        levelOrder[i], levelOrder[len(levelOrder) - 1 - i] = levelOrder[len(levelOrder) - 1 - i], levelOrder[i]
+    }
+    return levelOrder
+}
+```
+
+
+
+## 队列
+
+### 2.用两个栈实现队列
 
 用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 appendTail 和 deleteHead ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，deleteHead 操作返回 -1 )
 
@@ -255,7 +461,9 @@ func (this *CQueue) DeleteHead() int {
 }
 ```
 
-### 7.斐波那契数列
+## 动态规划
+
+### 1.斐波那契数列
 
 写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项。斐波那契数列的定义如下：
 
@@ -291,7 +499,7 @@ func fib(n int) int {
 }
 ```
 
-### 8.青蛙跳台阶问题
+### 2.青蛙跳台阶问题
 
 一只青蛙一次可以跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个 `n` 级的台阶总共有多少种跳法。
 
@@ -343,62 +551,11 @@ func numWays(n int) int {
 }
 ```
 
-### 9.旋转数组中的最小数字
+### 3.最长公共子序列 TODO
 
-把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个递增排序的数组的一个旋转，输出旋转数组的最小元素。例如，数组 [3,4,5,1,2] 为 [1,2,3,4,5] 的一个旋转，该数组的最小值为1。  
+## 图
 
-示例 1：
-
-```
-输入：[3,4,5,1,2]
-输出：1
-```
-
-示例 2：
-
-```
-输入：[2,2,2,0,1]
-输出：0
-```
-
-**思路:1.暴力遍历 2.二分求最小值+双指针**
-
-```go
-func minArray(numbers []int) int {
-    maxNum := numbers[0]
-
-    for i := 1; i < len(numbers); i++ {
-        if numbers[i] < maxNum {
-            return numbers[i]
-        }
-    }
-    return maxNum
-}
-```
-
-```go
-func minArray(numbers []int) int {
-        // 求中位点
-    j := len(numbers) - 1
-    if j == 0 {
-        return numbers[j]
-    }
-    m := int(j / 2)
-    // 判断中位点和尾点的关系 
-    // 中位点在左数组中 最小值在[m+1, j]
-    if numbers[m] > numbers[j] {
-        return minArray(numbers[m+1:])
-    // 最小点在左数组中
-    } else if numbers[m] < numbers[j] {
-        return minArray(numbers[:m+1])
-    // 相等时无法判断 缩小边界
-    } else {
-        return minArray(numbers[:j])
-    }
-}
-```
-
-### 10.矩阵中的路径
+### 1.矩阵中的路径
 
 请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从矩阵中的任意一格开始，每一步可以在矩阵中向左、右、上、下移动一格。如果一条路径经过了矩阵的某一格，那么该路径不能再次进入该格子。例如，在下面的3×4的矩阵中包含一条字符串“bfce”的路径（路径中的字母用加粗标出）。
 
@@ -574,7 +731,7 @@ func dfs(board [][]byte, i, j, k int, word string) bool {
 }
 ```
 
-### 11.机器人的运动范围
+### 2.机器人的运动范围
 
 地上有一个m行n列的方格，从坐标 [0,0] 到坐标 [m-1,n-1] 。一个机器人从坐标 [0, 0] 的格子开始移动，它每次可以向左、右、上、下移动一格（不能移动到方格外），也不能进入行坐标和列坐标的数位之和大于k的格子。例如，当k为18时，机器人能够进入方格 [35, 37] ，因为3+5+3+7=18。但它不能进入方格 [35, 38]，因为3+5+3+8=19。请问该机器人能够到达多少个格子？ 
 
@@ -656,10 +813,4 @@ func getSum(num int) int {
 	return sum
 }
 ```
-
-
-
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problemset/lcof/
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 

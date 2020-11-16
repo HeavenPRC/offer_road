@@ -312,10 +312,29 @@ func detectCycle(head *ListNode) *ListNode {
 }
 ```
 
-### 5.合并两个有序链表
+### 5.合并两个有序链表(类似合并数组)
 
 ```go
-
+func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
+	tmp := &ListNode{}
+	res := tmp
+	for l1 != nil && l2 != nil {
+		if l1.Val < l2.Val {
+			tmp.Next = l1
+			l1 = l1.Next
+		} else {
+			tmp.Next = l2
+			l2 = l2.Next
+		}
+		tmp = tmp.Next
+	}
+	if l1 == nil {
+		tmp.Next = l2
+	} else {
+		tmp.Next = l1
+	}
+	return res.Next
+}
 ```
 
 ## 二叉树

@@ -130,7 +130,7 @@ slave-priority #配置从库优先级
 
 **第二轮:和旧主库同步接近**
 
-环形缓冲区的标志位 slave_repl_offse和master_repl_offset
+环形缓冲区的标志位 slave_repl_offset和master_repl_offset
 
 **第三轮:ID号小的从库优先**
 
